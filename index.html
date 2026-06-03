@@ -140,15 +140,14 @@ nav.scrolled .nav-links a { color: var(--dark); }
   pointer-events: none;
   overflow: hidden;
 }
-.hero-video-wrap iframe {
+.hero-video-wrap video {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 177.78vh;
-  height: 100vh;
-  min-width: 100vw;
-  min-height: 56.25vw;
-  border: none;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto; height: auto;
+  object-fit: cover;
   pointer-events: none;
 }
 .hero-overlay {
@@ -793,12 +792,9 @@ footer {
 <section id="hero">
   <!-- YouTube commercial: "Rotake T1 Smart Cordless Impact Wrench Promo" -->
   <div class="hero-video-wrap">
-    <iframe
-      src="https://www.youtube.com/embed/VSrEDopldzA?autoplay=1&mute=1&loop=1&playlist=VSrEDopldzA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1"
-      allow="autoplay; encrypted-media; picture-in-picture"
-      allowfullscreen
-      title="RotakeSA — Rotake T1 Smart Cordless Impact Wrench Promo">
-    </iframe>
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="hero.mp4" type="video/mp4">
+    </video>
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-noise"></div>
