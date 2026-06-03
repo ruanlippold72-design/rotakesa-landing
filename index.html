@@ -637,7 +637,9 @@ footer {
   padding: 28px 40px;
   display: flex; align-items: center; justify-content: space-between;
 }
-.footer-logo img { height: 30px; }
+.footer-logo { font-family: var(--ff-display); font-size: 28px; letter-spacing: .06em; line-height: 1; }
+.footer-logo .r { color: var(--red); }
+.footer-logo .s { color: #888; }
 .footer-tagline {
   font-family: var(--ff-display);
   font-size: 17px; letter-spacing: .1em;
@@ -1050,7 +1052,7 @@ footer {
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo"><img src="imgs/logo.png" alt="RotakeSA"></div>
+  <div class="footer-logo"><span class="r">ROTAKE</span><span class="s">SA</span></div>
   <p class="footer-tagline">TOOLS CHANGE THE WORLD</p>
   <p class="footer-copy">© 2025 RotakeSA. All rights reserved.</p>
 </footer>
