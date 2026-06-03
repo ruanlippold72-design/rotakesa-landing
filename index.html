@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RotakeSA — Tools Change The World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E8001C;
+  --red2: #b50016;
+  --white: #ffffff;
+  --offwhite: #f7f7f5;
+  --light: #efefed;
+  --mid: #d0d0cc;
+  --muted: #999993;
+  --dark: #222220;
+  --black: #111110;
+  --ff-display: 'Bebas Neue', sans-serif;
+  --ff-body: 'Space Grotesk', sans-serif;
+  --ff-ui: 'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ff-body);
+  background: var(--white);
+  color: var(--dark);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── PRELOADER ───────────────────────────────── */
+#preloader {
+  position: fixed; inset: 0;
+  background: var(--white);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+#preloader.done { opacity: 0; visibility: hidden; }
+#preloader img { width: 180px; height: auto; }
+.pre-bar-wrap {
+  width: 220px; height: 2px;
+  background: var(--light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.pre-bar {
+  height: 100%; width: 0%;
+  background: var(--red);
+  border-radius: 2px;
+  animation: preLoad 1.6s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes preLoad { to { width: 100%; } }
+.pre-text {
+  font-family: var(--ff-ui);
+  font-size: 11px;
+  letter-spacing: .15em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ─── CUSTOM CURSOR ──────────────────────────── */
+#cur {
+  position: fixed; top: 0; left: 0; z-index: 9998;
+  width: 8px; height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width .15s, height .15s;
+}
+#cur.big { width: 14px; height: 14px; }
+#cur-ring {
+  position: fixed; top: 0; left: 0; z-index: 9997;
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(232,0,28,.45);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* ─── NAV ────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  transition: background .3s, backdrop-filter .3s;
+}
+nav.scrolled {
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 var(--mid);
+}
+.nav-logo img { height: 36px; }
+.nav-links { display: flex; align-items: center; gap: 36px; }
+.nav-links a {
+  font-family: var(--ff-ui);
+  font-size: 13px; font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--white);
+  text-decoration: none;
+  transition: color .2s;
+}
+nav.scrolled .nav-links a { color: var(--dark); }
+.nav-links a:hover { color: var(--red) !important; }
+.btn-quote {
+  display: inline-flex !important; align-items: center;
+  padding: 9px 22px;
+  background: var(--red);
+  color: var(--white) !important;
+  border-radius: 3px;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  transition: background .2s !important;
+}
+.btn-quote:hover { background: var(--red2) !important; color: var(--white) !important; }
+
+/* ─── HERO ───────────────────────────────────── */
+#hero {
+  position: relative;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  background: var(--black);
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-video-wrap {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-video-wrap iframe {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 177.78vh;
+  height: 100vh;
+  min-width: 100vw;
+  min-height: 56.25vw;
+  border: none;
+  pointer-events: none;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.4) 0%,
+    rgba(0,0,0,.18) 45%,
+    rgba(0,0,0,.62) 100%
+  );
+  z-index: 1;
+}
+.hero-noise {
+  position: absolute; inset: 0; z-index: 2; opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px;
+}
+.hero-content {
+  position: relative; z-index: 3;
+  text-align: center;
+  color: var(--white);
+  pointer-events: none;
+}
+.hero-title {
+  font-family: var(--ff-display);
+  font-size: clamp(72px, 11vw, 148px);
+  line-height: .92;
+  letter-spacing: .02em;
+  text-shadow: 0 4px 40px rgba(0,0,0,.5);
+}
+.hero-title .red { color: var(--red); }
+.hero-subtitle {
+  margin-top: 20px;
+  font-family: var(--ff-ui);
+  font-size: 12px;
+  letter-spacing: .22em;
+  color: rgba(255,255,255,.65);
+  text-transform: uppercase;
+}
+
+/* Corner labels */
+.hero-corner {
+  position: absolute; z-index: 3;
+  font-family: var(--ff-ui);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  line-height: 1.7;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.hero-corner.visible { opacity: 1; transform: translateY(0); }
+.hero-tl { top: 90px; left: 40px; }
+.hero-tr { top: 90px; right: 40px; text-align: right; }
+.hero-bl { bottom: 80px; left: 40px; }
+.hero-br { bottom: 80px; right: 40px; text-align: right; }
+
+/* Spec chips */
+.spec-chip {
+  position: absolute; z-index: 3;
+  background: rgba(255,255,255,.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 6px;
+  padding: 10px 16px;
+  color: var(--white);
+  font-family: var(--ff-ui);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .6s ease, transform .6s ease, border-color .25s;
+  white-space: nowrap;
+}
+.spec-chip:hover { border-color: var(--red); }
+.spec-chip .val {
+  font-family: var(--ff-display);
+  font-size: 20px;
+  display: block;
+  letter-spacing: .04em;
+  line-height: 1.2;
+}
+.chip-tl { top: 36%; left: 5%; }
+.chip-tr { top: 36%; right: 5%; }
+.chip-bl { bottom: 20%; left: 5%; }
+.chip-br { bottom: 20%; right: 5%; }
+.spec-chip.visible { opacity: 1; transform: translateY(0); }
+
+/* Scroll hint */
+.hero-scroll-hint {
+  position: absolute; bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0;
+  animation: fadeUpHint .8s 2.4s ease forwards;
+}
+.hero-scroll-hint span {
+  font-family: var(--ff-ui); font-size: 10px;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+}
+.scroll-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, var(--red), transparent);
+  animation: linePulse 1.6s 2.8s ease-out infinite;
+  transform-origin: top;
+}
+@keyframes linePulse {
+  0%   { transform: scaleY(0); opacity: 0; }
+  30%  { opacity: 1; }
+  60%  { transform: scaleY(1); }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+}
+@keyframes fadeUpHint {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ─── MARQUEE ────────────────────────────────── */
+.marquee-strip {
+  background: var(--red);
+  overflow: hidden;
+  padding: 14px 0;
+  white-space: nowrap;
+  user-select: none;
+  position: relative; z-index: 2;
+}
+.marquee-strip:hover .marquee-inner { animation-play-state: paused; }
+.marquee-inner {
+  display: inline-flex;
+  animation: marqueeScroll 30s linear infinite;
+}
+.marquee-inner span {
+  font-family: var(--ff-display);
+  font-size: 18px;
+  letter-spacing: .08em;
+  color: var(--white);
+  padding: 0 18px;
+}
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ─── COMMON SECTION ─────────────────────────── */
+section { padding: 100px 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.section-label {
+  font-family: var(--ff-ui);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 14px;
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── PRODUCTS ───────────────────────────────── */
+#products { background: var(--white); padding-top: 80px; }
+.products-header {
+  border-top: 1px solid var(--mid);
+  border-bottom: 1px solid var(--mid);
+  padding: 32px 0;
+  margin-bottom: 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.products-header h2 {
+  font-family: var(--ff-display);
+  font-size: clamp(36px, 4.5vw, 60px);
+  letter-spacing: .03em;
+  line-height: 1;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-left: 1px solid var(--mid);
+  border-top: 1px solid var(--mid);
+}
+.product-card {
+  border-right: 1px solid var(--mid);
+  border-bottom: 1px solid var(--mid);
+  padding: 32px 28px;
+  cursor: pointer;
+  transition: background .2s;
+  position: relative;
+}
+.product-card:hover { background: var(--offwhite); }
+.product-card:hover .card-img { transform: scale(1.04); }
+.card-img-wrap {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--light);
+  margin-bottom: 20px;
+  border-radius: 2px;
+}
+.card-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+.card-name {
+  font-family: var(--ff-display);
+  font-size: 21px;
+  letter-spacing: .03em;
+  line-height: 1.1;
+  margin-bottom: 5px;
+}
+.card-spec {
+  font-family: var(--ff-ui);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .05em;
+  margin-bottom: 16px;
+}
+.card-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--ff-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background .2s;
+}
+.product-card:hover .card-badge { background: var(--red); }
+
+/* ─── MODAL ──────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s, visibility .3s;
+  padding: 24px;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal-box {
+  background: var(--white);
+  max-width: 640px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  border-radius: 4px;
+  padding: 40px;
+  position: relative;
+  transform: translateY(24px);
+  transition: transform .3s;
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  background: var(--light);
+  border: none; border-radius: 50%;
+  cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+  color: var(--dark);
+}
+.modal-close:hover { background: var(--mid); }
+.modal-img {
+  width: 100%; max-height: 240px;
+  object-fit: contain;
+  background: var(--light);
+  border-radius: 3px;
+  margin-bottom: 24px;
+  padding: 16px;
+}
+.modal-title {
+  font-family: var(--ff-display);
+  font-size: 34px;
+  letter-spacing: .03em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.modal-sub {
+  font-family: var(--ff-ui);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.modal-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--mid);
+  border: 1px solid var(--mid);
+  margin-bottom: 28px;
+}
+.spec-item {
+  background: var(--offwhite);
+  padding: 16px 10px;
+  text-align: center;
+}
+.spec-val {
+  font-family: var(--ff-display);
+  font-size: 26px;
+  color: var(--dark);
+  letter-spacing: .04em;
+  display: block;
+}
+.spec-key {
+  font-family: var(--ff-ui);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-top: 2px;
+  display: block;
+}
+.btn-modal-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 26px;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--ff-ui);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background .2s;
+}
+.btn-modal-cta:hover { background: var(--red2); }
+
+/* ─── BANNER ─────────────────────────────────── */
+#banner {
+  height: 70vh;
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: center;
+}
+.banner-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://rotakesa.co.za/wp-content/uploads/2025/03/RotakeSA-WebBanner-Hero1.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.banner-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg, rgba(232,0,28,.85) 0%, rgba(200,0,15,.35) 42%, transparent 68%);
+}
+.banner-content {
+  position: relative; z-index: 2;
+  padding: 0 80px;
+  color: var(--white);
+  max-width: 580px;
+}
+.banner-title {
+  font-family: var(--ff-display);
+  font-size: clamp(44px, 6vw, 90px);
+  line-height: .95;
+  letter-spacing: .02em;
+  margin-bottom: 20px;
+}
+.banner-body {
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255,255,255,.82);
+  margin-bottom: 32px;
+  max-width: 400px;
+}
+.btn-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 26px;
+  background: var(--white);
+  color: var(--dark);
+  font-family: var(--ff-ui);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background .2s;
+}
+.btn-white:hover { background: var(--offwhite); }
+
+/* ─── WHY ────────────────────────────────────── */
+#why { background: var(--offwhite); padding: 0; }
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--mid);
+}
+.why-item {
+  padding: 60px 32px;
+  border-right: 1px solid var(--mid);
+}
+.why-item:last-child { border-right: none; }
+.why-num {
+  font-family: var(--ff-display);
+  font-size: 60px;
+  color: var(--dark);
+  line-height: 1;
+  margin-bottom: 8px;
+  display: flex; align-items: baseline; gap: 2px;
+}
+.why-num .unit { font-size: 28px; color: var(--red); }
+.why-label {
+  font-family: var(--ff-display);
+  font-size: 17px; letter-spacing: .04em;
+  color: var(--dark); margin-bottom: 8px;
+}
+.why-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ─── ABOUT ──────────────────────────────────── */
+#about { background: var(--white); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+.about-img-wrap { position: relative; }
+.about-img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+}
+.about-badge {
+  position: absolute; bottom: 24px; right: -20px;
+  background: var(--red);
+  color: var(--white);
+  padding: 16px 20px;
+  font-family: var(--ff-display);
+  font-size: 13px; letter-spacing: .06em;
+  line-height: 1.6; text-align: center;
+  border-radius: 2px;
+}
+.about-heading {
+  font-family: var(--ff-display);
+  font-size: clamp(34px, 4vw, 58px);
+  line-height: 1; letter-spacing: .03em;
+  margin-bottom: 20px;
+}
+.about-body {
+  font-size: 15px; color: var(--muted);
+  line-height: 1.7; margin-bottom: 14px;
+}
+.about-metrics {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--mid);
+  border: 1px solid var(--mid);
+  margin: 32px 0;
+}
+.metric-item { background: var(--offwhite); padding: 20px 16px; }
+.metric-val {
+  font-family: var(--ff-display);
+  font-size: 36px; color: var(--dark);
+  letter-spacing: .04em; display: block;
+}
+.metric-key {
+  font-family: var(--ff-ui);
+  font-size: 11px; color: var(--muted);
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px;
+  border: 1.5px solid var(--dark);
+  color: var(--dark);
+  font-family: var(--ff-ui);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  text-decoration: none; border-radius: 3px;
+  transition: border-color .2s, color .2s;
+}
+.btn-outline:hover { border-color: var(--red); color: var(--red); }
+
+/* ─── CONTACT ────────────────────────────────── */
+#contact { background: var(--dark); }
+.contact-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+.contact-heading {
+  font-family: var(--ff-display);
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1; letter-spacing: .02em;
+  color: var(--white); margin-bottom: 36px;
+}
+.contact-heading span { color: var(--red); }
+.contact-details { display: flex; flex-direction: column; gap: 18px; margin-bottom: 32px; }
+.contact-item { display: flex; align-items: flex-start; gap: 14px; }
+.contact-icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+}
+.contact-icon svg { width: 17px; height: 17px; stroke: var(--red); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.contact-text { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.6; padding-top: 10px; }
+.contact-text a { color: rgba(255,255,255,.65); text-decoration: none; transition: color .2s; }
+.contact-text a:hover { color: var(--red); }
+.contact-social { display: flex; gap: 10px; }
+.social-icon {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  transition: border-color .2s, background .2s;
+}
+.social-icon:hover { border-color: var(--red); background: rgba(232,0,28,.1); }
+.social-icon svg { width: 16px; height: 16px; fill: rgba(255,255,255,.55); transition: fill .2s; }
+.social-icon:hover svg { fill: var(--red); }
+
+.contact-form { display: flex; flex-direction: column; gap: 14px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group label {
+  font-family: var(--ff-ui); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+}
+.form-group input, .form-group textarea {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 3px;
+  padding: 12px 14px;
+  color: var(--white);
+  font-family: var(--ff-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,.2); }
+.form-group input:focus, .form-group textarea:focus { border-color: var(--red); }
+.form-group textarea { resize: vertical; min-height: 120px; }
+.btn-submit {
+  padding: 14px 26px;
+  background: var(--red); color: var(--white);
+  border: none; border-radius: 3px;
+  font-family: var(--ff-ui);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; transition: background .2s;
+  align-self: flex-start;
+}
+.btn-submit:hover { background: var(--red2); }
+.form-success {
+  display: none;
+  align-items: center; gap: 10px;
+  padding: 13px 16px;
+  background: rgba(232,0,28,.1);
+  border: 1px solid rgba(232,0,28,.28);
+  border-radius: 3px;
+  color: #ff7080;
+  font-family: var(--ff-ui);
+  font-size: 13px; font-weight: 500;
+}
+.form-success.show { display: flex; }
+
+/* ─── FOOTER ─────────────────────────────────── */
+footer {
+  background: var(--black);
+  padding: 28px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo img { height: 30px; opacity: .4; filter: invert(1); }
+.footer-tagline {
+  font-family: var(--ff-display);
+  font-size: 17px; letter-spacing: .1em;
+  color: var(--red);
+}
+.footer-copy {
+  font-family: var(--ff-ui);
+  font-size: 11px; color: rgba(255,255,255,.28);
+  letter-spacing: .04em;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .nav-links a:not(.btn-quote) { display: none; }
+  .nav-links { gap: 0; }
+  .hero-tr, .hero-br { display: none; }
+  .chip-tl, .chip-tr, .chip-bl, .chip-br { display: none; }
+  .hero-tl, .hero-bl { font-size: 9px; left: 20px; }
+  .hero-bl { bottom: 70px; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-badge { right: 0; }
+  .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+  .form-row { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 14px; text-align: center; padding: 28px 20px; }
+  .banner-content { padding: 0 36px; }
+  .container { padding: 0 20px; }
+}
+@media (max-width: 580px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+  .why-item { border-right: none; border-bottom: 1px solid var(--mid); }
+  .modal-specs { grid-template-columns: repeat(2, 1fr); }
+  .modal-box { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <img src="https://rotakesa.co.za/wp-content/uploads/2025/01/Rotake-SA-Logo-v1.png" alt="RotakeSA">
+  <div class="pre-bar-wrap"><div class="pre-bar"></div></div>
+  <p class="pre-text">Loading experience…</p>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo"><img src="https://rotakesa.co.za/wp-content/uploads/2025/01/Rotake-SA-Logo-v1.png" alt="RotakeSA"></a>
+  <div class="nav-links">
+    <a href="#products">Products</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="https://rotakesa.co.za/contact-us/" class="btn-quote" target="_blank" rel="noopener">Get a Quote</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- YouTube commercial: "Rotake T1 Smart Cordless Impact Wrench Promo" -->
+  <div class="hero-video-wrap">
+    <iframe
+      src="https://www.youtube.com/embed/VSrEDopldzA?autoplay=1&mute=1&loop=1&playlist=VSrEDopldzA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen
+      title="RotakeSA — Rotake T1 Smart Cordless Impact Wrench Promo">
+    </iframe>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-noise"></div>
+
+  <div class="hero-corner hero-tl">ROTAKE SA // Est. 2025<br>Secunda, Mpumalanga</div>
+  <div class="hero-corner hero-tr">T5 SERIES / 3/4″ CORDLESS<br>IMPACT WRENCH</div>
+  <div class="hero-corner hero-bl">Scroll down to<br>discover.</div>
+  <div class="hero-corner hero-br">rotakesa.co.za</div>
+
+  <div class="spec-chip chip-tl"><span class="val">2400 Nm</span>Max Torque</div>
+  <div class="spec-chip chip-tr"><span class="val">20V</span>Li-Ion Voltage</div>
+  <div class="spec-chip chip-bl"><span class="val">8.0 Ah</span>Battery</div>
+  <div class="spec-chip chip-br"><span class="val">3/4″</span>Drive Size</div>
+
+  <div class="hero-content">
+    <h1 class="hero-title">TOOLS<br><span class="red">CHANGE</span><br>THE WORLD</h1>
+    <p class="hero-subtitle">CORDLESS · PNEUMATIC · CONSUMABLES</p>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-inner">
+    <span>CORDLESS IMPACT WRENCHES</span><span>✦</span>
+    <span>AIR PNEUMATIC TOOLS</span><span>✦</span>
+    <span>HAMMER DRILLS</span><span>✦</span>
+    <span>CONSUMABLES &amp; BATTERIES</span><span>✦</span>
+    <span>ORAPI CHEMICALS</span><span>✦</span>
+    <span>TOOLS CHANGE THE WORLD</span><span>✦</span>
+    <span>NOW IN SOUTH AFRICA</span><span>✦</span>
+    <span>PROFESSIONAL GRADE</span><span>✦</span>
+    <span>CORDLESS IMPACT WRENCHES</span><span>✦</span>
+    <span>AIR PNEUMATIC TOOLS</span><span>✦</span>
+    <span>HAMMER DRILLS</span><span>✦</span>
+    <span>CONSUMABLES &amp; BATTERIES</span><span>✦</span>
+    <span>ORAPI CHEMICALS</span><span>✦</span>
+    <span>TOOLS CHANGE THE WORLD</span><span>✦</span>
+    <span>NOW IN SOUTH AFRICA</span><span>✦</span>
+    <span>PROFESSIONAL GRADE</span><span>✦</span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="container">
+    <div class="products-header reveal">
+      <div>
+        <p class="section-label">Our Range</p>
+        <h2>PRODUCTS</h2>
+      </div>
+      <p style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.6;">Professional-grade tools engineered for South African industry.</p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card reveal" style="transition-delay:.07s" data-modal="m1">
+        <div class="card-img-wrap"><img class="card-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/t5-3-4-cordless-impact-wrench-2400nm-8ah-rotakesa.png" alt="T5" loading="lazy"></div>
+        <p class="card-name">T5 | 3/4″ Cordless Impact Wrench</p>
+        <p class="card-spec">2400Nm · 20V · 8.0Ah · Flagship</p>
+        <span class="card-badge">View Specs</span>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.14s" data-modal="m2">
+        <div class="card-img-wrap"><img class="card-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/t3-1-2-cordless-impact-wrench-1880nm-rotakesa.png" alt="T3" loading="lazy"></div>
+        <p class="card-name">T3 | 1/2″ Cordless Impact Wrench</p>
+        <p class="card-spec">1880Nm · 20V · 6.0Ah</p>
+        <span class="card-badge">View Specs</span>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.21s" data-modal="m3">
+        <div class="card-img-wrap"><img class="card-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/t1-1-2-cordless-impact-wrench-780nm-rotakesa.png" alt="T1" loading="lazy"></div>
+        <p class="card-name">T1 | 1/2″ Cordless Impact Wrench</p>
+        <p class="card-spec">780Nm · 20V · 4.0Ah</p>
+        <span class="card-badge">View Specs</span>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.28s" data-modal="m4">
+        <div class="card-img-wrap"><img class="card-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/rt-5665-1-air-impact-wrench-rotakesa.png" alt="RT-5665" loading="lazy"></div>
+        <p class="card-name">RT-5665 | 1″ Air Impact Wrench</p>
+        <p class="card-spec">Pneumatic · Heavy Duty</p>
+        <span class="card-badge">View Specs</span>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.35s" data-modal="m5">
+        <div class="card-img-wrap"><img class="card-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/RotakeSA-WebBanner-Accessories.jpg" alt="Batteries" loading="lazy"></div>
+        <p class="card-name">Batteries &amp; Chargers</p>
+        <p class="card-spec">20V Li-Ion Platform</p>
+        <span class="card-badge">View Specs</span>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.42s" onclick="window.open('https://rotakesa.co.za/contact-us/','_blank')">
+        <div class="card-img-wrap"><img class="card-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/RotakeSA-WebBanner-Disks.jpg" alt="Consumables" loading="lazy"></div>
+        <p class="card-name">Grinding Discs &amp; Consumables</p>
+        <p class="card-spec">Professional Consumables Range</p>
+        <span class="card-badge">Find a Dealer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="m1" role="dialog" aria-modal="true" aria-label="T5 Impact Wrench specs">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Close">✕</button>
+    <img class="modal-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/t5-3-4-cordless-impact-wrench-2400nm-8ah-rotakesa.png" alt="T5">
+    <p class="modal-title">T5</p>
+    <p class="modal-sub">3/4″ Cordless Impact Wrench · Flagship Model</p>
+    <div class="modal-specs">
+      <div class="spec-item"><span class="spec-val">2400</span><span class="spec-key">Nm Torque</span></div>
+      <div class="spec-item"><span class="spec-val">20V</span><span class="spec-key">Voltage</span></div>
+      <div class="spec-item"><span class="spec-val">8.0 Ah</span><span class="spec-key">Battery</span></div>
+      <div class="spec-item"><span class="spec-val">3/4″</span><span class="spec-key">Drive</span></div>
+      <div class="spec-item"><span class="spec-val">2200</span><span class="spec-key">RPM</span></div>
+      <div class="spec-item"><span class="spec-val">3400</span><span class="spec-key">IPM</span></div>
+    </div>
+    <a href="https://rotakesa.co.za/contact-us/" class="btn-modal-cta" target="_blank" rel="noopener">GET A QUOTE →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m2" role="dialog" aria-modal="true" aria-label="T3 Impact Wrench specs">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Close">✕</button>
+    <img class="modal-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/t3-1-2-cordless-impact-wrench-1880nm-rotakesa.png" alt="T3">
+    <p class="modal-title">T3</p>
+    <p class="modal-sub">1/2″ Cordless Impact Wrench</p>
+    <div class="modal-specs">
+      <div class="spec-item"><span class="spec-val">1880</span><span class="spec-key">Nm Torque</span></div>
+      <div class="spec-item"><span class="spec-val">20V</span><span class="spec-key">Voltage</span></div>
+      <div class="spec-item"><span class="spec-val">6.0 Ah</span><span class="spec-key">Battery</span></div>
+      <div class="spec-item"><span class="spec-val">1/2″</span><span class="spec-key">Drive</span></div>
+      <div class="spec-item"><span class="spec-val">2400</span><span class="spec-key">RPM</span></div>
+      <div class="spec-item"><span class="spec-val">3600</span><span class="spec-key">IPM</span></div>
+    </div>
+    <a href="https://rotakesa.co.za/contact-us/" class="btn-modal-cta" target="_blank" rel="noopener">GET A QUOTE →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m3" role="dialog" aria-modal="true" aria-label="T1 Impact Wrench specs">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Close">✕</button>
+    <img class="modal-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/t1-1-2-cordless-impact-wrench-780nm-rotakesa.png" alt="T1">
+    <p class="modal-title">T1</p>
+    <p class="modal-sub">1/2″ Cordless Impact Wrench</p>
+    <div class="modal-specs">
+      <div class="spec-item"><span class="spec-val">780</span><span class="spec-key">Nm Torque</span></div>
+      <div class="spec-item"><span class="spec-val">20V</span><span class="spec-key">Voltage</span></div>
+      <div class="spec-item"><span class="spec-val">4.0 Ah</span><span class="spec-key">Battery</span></div>
+      <div class="spec-item"><span class="spec-val">1/2″</span><span class="spec-key">Drive</span></div>
+      <div class="spec-item"><span class="spec-val">2600</span><span class="spec-key">RPM</span></div>
+      <div class="spec-item"><span class="spec-val">3200</span><span class="spec-key">IPM</span></div>
+    </div>
+    <a href="https://rotakesa.co.za/contact-us/" class="btn-modal-cta" target="_blank" rel="noopener">GET A QUOTE →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m4" role="dialog" aria-modal="true" aria-label="RT-5665 Air Wrench specs">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Close">✕</button>
+    <img class="modal-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/rt-5665-1-air-impact-wrench-rotakesa.png" alt="RT-5665">
+    <p class="modal-title">RT-5665</p>
+    <p class="modal-sub">1″ Air Impact Wrench · Pneumatic</p>
+    <div class="modal-specs">
+      <div class="spec-item"><span class="spec-val">Air</span><span class="spec-key">Power Type</span></div>
+      <div class="spec-item"><span class="spec-val">1″</span><span class="spec-key">Drive Size</span></div>
+      <div class="spec-item"><span class="spec-val">8000</span><span class="spec-key">RPM</span></div>
+      <div class="spec-item"><span class="spec-val">Pneu</span><span class="spec-key">System</span></div>
+      <div class="spec-item"><span class="spec-val">Ind.</span><span class="spec-key">Grade</span></div>
+      <div class="spec-item"><span class="spec-val">High</span><span class="spec-key">Torque</span></div>
+    </div>
+    <a href="https://rotakesa.co.za/contact-us/" class="btn-modal-cta" target="_blank" rel="noopener">GET A QUOTE →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m5" role="dialog" aria-modal="true" aria-label="Batteries and Chargers specs">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Close">✕</button>
+    <img class="modal-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/RotakeSA-WebBanner-Accessories.jpg" alt="Batteries">
+    <p class="modal-title">Batteries &amp; Chargers</p>
+    <p class="modal-sub">20V Li-Ion Platform</p>
+    <div class="modal-specs">
+      <div class="spec-item"><span class="spec-val">20V</span><span class="spec-key">Voltage</span></div>
+      <div class="spec-item"><span class="spec-val">4–8 Ah</span><span class="spec-key">Capacity</span></div>
+      <div class="spec-item"><span class="spec-val">Fast</span><span class="spec-key">Charging</span></div>
+      <div class="spec-item"><span class="spec-val">Li-Ion</span><span class="spec-key">Chemistry</span></div>
+      <div class="spec-item"><span class="spec-val">LED</span><span class="spec-key">Indicator</span></div>
+      <div class="spec-item"><span class="spec-val">Univ.</span><span class="spec-key">Compatible</span></div>
+    </div>
+    <a href="https://rotakesa.co.za/contact-us/" class="btn-modal-cta" target="_blank" rel="noopener">GET A QUOTE →</a>
+  </div>
+</div>
+
+<!-- BANNER -->
+<div id="banner">
+  <div class="banner-bg"></div>
+  <div class="banner-grad"></div>
+  <div class="banner-content reveal">
+    <h2 class="banner-title">ROTAKE TOOLS.<br>NOW IN SA.</h2>
+    <p class="banner-body">Professional-grade cordless, pneumatic, and consumable tools engineered for South African industry — from the mining floors of Mpumalanga to workshops and construction sites across the country.</p>
+    <a href="https://rotakesa.co.za" class="btn-white" target="_blank" rel="noopener">Explore Full Range →</a>
+  </div>
+</div>
+
+<!-- WHY ROTAKE SA -->
+<section id="why">
+  <div class="why-grid">
+    <div class="why-item reveal" style="transition-delay:.05s">
+      <div class="why-num">2400<span class="unit"> Nm</span></div>
+      <p class="why-label">Max Torque</p>
+      <p class="why-desc">Our flagship T5 delivers best-in-class cordless power for the toughest fastening jobs.</p>
+    </div>
+    <div class="why-item reveal" style="transition-delay:.1s">
+      <div class="why-num">20<span class="unit">V</span></div>
+      <p class="why-label">Unified Platform</p>
+      <p class="why-desc">One battery system across the entire range — compact T1 through to heavy-duty T5.</p>
+    </div>
+    <div class="why-item reveal" style="transition-delay:.15s">
+      <div class="why-num" style="font-size:52px">SA</div>
+      <p class="why-label">Local Branch</p>
+      <p class="why-desc">Secunda, Mpumalanga since May 2025 — stocked, supported, and built for SA conditions.</p>
+    </div>
+    <div class="why-item reveal" style="transition-delay:.2s">
+      <div class="why-num">50<span class="unit">+</span></div>
+      <p class="why-label">Products Available</p>
+      <p class="why-desc">Cordless, pneumatic, consumables, and Orapi chemicals under one South African roof.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal">
+        <img class="about-img" src="https://rotakesa.co.za/wp-content/uploads/2025/01/rotake-home.jpg" alt="RotakeSA tools">
+        <div class="about-badge">FIRST SA BRANCH<br>SECUNDA<br>MPUMALANGA</div>
+      </div>
+      <div>
+        <p class="section-label reveal">About Us</p>
+        <h2 class="about-heading reveal">YOUR QUALITY PARTNER</h2>
+        <p class="about-body reveal">Rotake is built on decades of R&amp;D and precision manufacturing — delivering tools that professionals can rely on in the harshest conditions. Every product passes rigorous quality testing before it reaches your hands.</p>
+        <p class="about-body reveal">From the mining corridors of Mpumalanga to auto workshops and construction sites across South Africa, RotakeSA brings world-class tooling with local support and stock availability.</p>
+        <div class="about-metrics reveal">
+          <div class="metric-item">
+            <span class="metric-val counter" data-target="2400">0</span>
+            <span class="metric-key">Nm Max Torque</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-val counter" data-target="2025">0</span>
+            <span class="metric-key">SA Launch Year</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-val counter" data-target="50" data-suffix="+">0</span>
+            <span class="metric-key">Products</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-val counter" data-target="20" data-suffix="V">0</span>
+            <span class="metric-key">Unified Platform</span>
+          </div>
+        </div>
+        <a href="https://rotakesa.co.za/rotake-history/" class="btn-outline reveal" target="_blank" rel="noopener">Our Story →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div>
+        <p class="section-label" style="color:rgba(255,255,255,.35)" class="reveal">Get In Touch</p>
+        <h2 class="contact-heading reveal">LET'S TALK<br><span>TOOLS</span></h2>
+        <div class="contact-details">
+          <div class="contact-item reveal">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.62 19.79 19.79 0 012 2.18 2 2 0 014 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            </div>
+            <div class="contact-text"><a href="tel:+27664706867">+27 (0)66 470 6867</a></div>
+          </div>
+          <div class="contact-item reveal">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="contact-text"><a href="mailto:info@rotakesa.co.za">info@rotakesa.co.za</a></div>
+          </div>
+          <div class="contact-item reveal">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="contact-text">16 Emerald Street, Property Plus Business Park,<br>Secunda, Mpumalanga, 2302</div>
+          </div>
+        </div>
+        <div class="contact-social reveal">
+          <a href="https://www.facebook.com/share/1F7Mvn7Kvw/" class="social-icon" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/rotakesaza" class="social-icon" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="2.5"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/rotakesa" class="social-icon" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@rotakesaza" class="social-icon" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+          </a>
+          <a href="https://x.com/rotakesaza" class="social-icon" target="_blank" rel="noopener" aria-label="X">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="f-name">Full Name</label>
+              <input type="text" id="f-name" name="name" placeholder="John Smith" required>
+            </div>
+            <div class="form-group">
+              <label for="f-email">Email</label>
+              <input type="email" id="f-email" name="email" placeholder="john@company.co.za" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="f-phone">Contact Number</label>
+              <input type="tel" id="f-phone" name="phone" placeholder="+27 XX XXX XXXX">
+            </div>
+            <div class="form-group">
+              <label for="f-company">Company Name</label>
+              <input type="text" id="f-company" name="company" placeholder="Your Company">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="f-message">Message</label>
+            <textarea id="f-message" name="message" placeholder="Tell us about your requirements…" required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Send Message →</button>
+          <div class="form-success" id="form-success">✓ Thank you — we'll be in touch shortly.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><img src="https://rotakesa.co.za/wp-content/uploads/2025/01/Rotake-SA-Logo-v1.png" alt="RotakeSA"></div>
+  <p class="footer-tagline">TOOLS CHANGE THE WORLD</p>
+  <p class="footer-copy">© 2025 RotakeSA. All rights reserved.</p>
+</footer>
+
+<script>
+/* ─── PRELOADER ─────────────────────────────── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('done');
+    animateHeroIn();
+  }, 1800);
+});
+
+function animateHeroIn() {
+  document.querySelectorAll('.hero-corner').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), 200 + i * 120);
+  });
+  document.querySelectorAll('.spec-chip').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), 400 + i * 160);
+  });
+}
+
+/* ─── CUSTOM CURSOR ─────────────────────────── */
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx + 'px';
+  cur.style.top  = my + 'px';
+});
+
+(function raf() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(raf);
+})();
+
+document.querySelectorAll('a,button,.product-card,.spec-chip,input,textarea,select').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+/* ─── NAV ───────────────────────────────────── */
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ─── REVEAL (IntersectionObserver) ─────────── */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ─── ANIMATED COUNTERS ─────────────────────── */
+function runCounter(el) {
+  const target = +el.dataset.target;
+  const suffix = el.dataset.suffix || '';
+  const dur = 1600;
+  const t0 = performance.now();
+  function step(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.floor(ease * target) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target + suffix;
+  }
+  requestAnimationFrame(step);
+}
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { runCounter(e.target); counterObs.unobserve(e.target); }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+
+/* ─── MODALS ────────────────────────────────── */
+document.querySelectorAll('[data-modal]').forEach(card => {
+  card.addEventListener('click', () => {
+    document.getElementById(card.dataset.modal).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+function closeModal(el) {
+  el.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) closeModal(ov); });
+  ov.querySelector('.modal-close').addEventListener('click', () => closeModal(ov));
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(closeModal);
+});
+
+/* ─── CONTACT FORM ──────────────────────────── */
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const ok = document.getElementById('form-success');
+  ok.classList.add('show');
+  this.reset();
+  setTimeout(() => ok.classList.remove('show'), 5000);
+});
+</script>
+</body>
+</html>
